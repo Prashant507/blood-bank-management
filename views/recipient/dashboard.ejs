@@ -1,0 +1,76 @@
+<%- include('../partials/header', {title: 'Recipient Dashboard', user: user}) %>
+
+<main>
+    <div class="container">
+        <div class="dashboard">
+            <aside class="sidebar">
+                <h3>Recipient Menu</h3>
+                <ul>
+                    <li><a href="/recipient/dashboard">Dashboard</a></li>
+                    <li><a href="/recipient/request-form">Request Blood</a></li>
+                </ul>
+                
+                <div style="margin-top: 2rem;">
+                    <h4>Profile Info</h4>
+                    <p><strong>Name:</strong> <%= user.name %></p>
+                    <p><strong>Blood Group:</strong> <%= user.bloodGroup %></p>
+                </div>
+            </aside>
+            
+            <div class="main-content">
+                <h2>Welcome, <%= user.name %></h2>
+                
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert error"><%= error %></div>
+                <% } %>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <h3><%= requests.length %></h3>
+                        <p>Total Requests</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3><%= requests.filter(r => r.status === 'pending').length %></h3>
+                        <p>Pending</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3><%= requests.filter(r => r.status === 'approved').length %></h3>
+                        <p>Approved</p>
+                    </div>
+                </div>
+                
+                <h3>My Blood Requests</h3>
+                <% if (requests.length > 0) { %>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Blood Group</th>
+                                <th>Units</th>
+                                <th>Urgency</th>
+                                <th>Hospital</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% requests.forEach(request => { %>
+                                <tr>
+                                    <td><%= new Date(request.createdAt).toLocaleDateString() %></td>
+                                    <td><%= request.bloodGroup %></td>
+                                    <td><%= request.units %></td>
+                                    <td><%= request.urgency %></td>
+                                    <td><%= request.hospital || 'Not specified' %></td>
+                                    <td><span class="status <%= request.status %>"><%= request.status %></span></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <p>No requests made yet. <a href="/recipient/request-form">Make your first request</a></p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('../partials/footer') %>

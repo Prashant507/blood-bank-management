@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Blood Bank Management System' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Blood Bank MS</div>
+                <nav>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <% if (typeof user !== 'undefined' && user) { %>
+                            <li><a href="/<%= user.role %>/dashboard">Dashboard</a></li>
+                            <li><a href="/auth/logout">Logout</a></li>
+                        <% } else { %>
+                            <li><a href="/auth/login">Login</a></li>
+                            <li><a href="/auth/register">Register</a></li>
+                        <% } %>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>

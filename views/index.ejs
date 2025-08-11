@@ -1,0 +1,34 @@
+<%- include('partials/header', {title: 'Home - Blood Bank Management System'}) %>
+
+<main>
+    <section class="hero">
+        <div class="container">
+            <h1>Save Lives, Donate Blood</h1>
+            <p>Connect blood donors with recipients and help save lives in your community</p>
+            <a href="/auth/register" class="btn">Get Started</a>
+            <a href="/auth/login" class="btn btn-secondary">Login</a>
+        </div>
+    </section>
+
+    <section class="container">
+        <div style="padding: 2rem 0;">
+            <h2>How It Works</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                <div style="text-align: center; padding: 1rem;">
+                    <h3>For Donors</h3>
+                    <p>Register as a donor, update your availability, and help save lives by donating blood</p>
+                </div>
+                <div style="text-align: center; padding: 1rem;">
+                    <h3>For Recipients</h3>
+                    <p>Request blood by type and location, track your request status, and get connected with donors</p>
+                </div>
+                <div style="text-align: center; padding: 1rem;">
+                    <h3>For Administrators</h3>
+                    <p>Manage blood inventory, approve requests, and oversee the entire blood bank system</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<%- include('partials/footer') %>
