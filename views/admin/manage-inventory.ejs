@@ -7,13 +7,13 @@
                 <h3>Admin Menu</h3>
                 <ul>
                     <li><a href="/admin/dashboard">Dashboard</a></li>
-                    <li><a href="/admin/manage-inventory">Manage Inventory</a></li>
+                    <li><a href="/admin/manage-inventory" class="active">Manage Inventory</a></li>
                 </ul>
             </aside>
             
             <div class="main-content">
-                <h2>Blood Inventory Management</h2>
-                
+                <h2>Blood Stock Management</h2>
+
                 <% if (typeof error !== 'undefined' && error) { %>
                     <div class="alert error"><%= error %></div>
                 <% } %>
@@ -21,110 +21,91 @@
                 <% if (typeof success !== 'undefined' && success) { %>
                     <div class="alert success"><%= success %></div>
                 <% } %>
-                
-                <div class="stats">
-                    <div class="stat-card">
-                        <h3>A+</h3>
-                        <p>Available Units: 25</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>A-</h3>
-                        <p>Available Units: 15</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>B+</h3>
-                        <p>Available Units: 20</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>B-</h3>
-                        <p>Available Units: 8</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>AB+</h3>
-                        <p>Available Units: 12</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>AB-</h3>
-                        <p>Available Units: 5</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>O+</h3>
-                        <p>Available Units: 30</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3>O-</h3>
-                        <p>Available Units: 10</p>
+
+                <!-- Current Blood Stock -->
+                <div class="blood-stock">
+                    <h3>Current Blood Stock</h3>
+                    <div class="blood-group-grid">
+                        <% const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'] %>
+                        <% bloodGroups.forEach(bg => { %>
+                            <% const stock = bloodStock && bloodStock.find(s => s.bloodGroup === bg) || { units: 0 } %>
+                            <div class="blood-group-card <%= stock.units < 5 ? 'low-stock' : '' %>">
+                                <h4><%= bg %></h4>
+                                <p class="units"><%= stock.units %> units</p>
+                                <small>Last updated: <%= stock.lastUpdated ? new Date(stock.lastUpdated).toLocaleString() : 'Never' %></small>
+                            </div>
+                        <% }) %>
                     </div>
                 </div>
-                
-                <h3>Update Blood Stock</h3>
-                <form action="/admin/update-inventory" method="POST" style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 2rem;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; align-items: end;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label for="bloodGroup">Blood Group:</label>
-                            <select id="bloodGroup" name="bloodGroup" required>
-                                <option value="A+">A+</option>
-                                <option value="A-">A-</option>
-                                <option value="B+">B+</option>
-                                <option value="B-">B-</option>
-                                <option value="AB+">AB+</option>
-                                <option value="AB-">AB-</option>
-                                <option value="O+">O+</option>
-                                <option value="O-">O-</option>
+
+                <!-- Update Inventory Form -->
+                <div class="update-inventory">
+                    <h3>Update Inventory</h3>
+                    <form action="/admin/update-inventory" method="POST" class="inventory-form">
+                        <div class="form-group">
+                            <label for="bloodGroup">Blood Group</label>
+                            <select name="bloodGroup" id="bloodGroup" required>
+                                <option value="">Select Blood Group</option>
+                                <% bloodGroups.forEach(bg => { %>
+                                    <option value="<%= bg %>"><%= bg %></option>
+                                <% }) %>
                             </select>
                         </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label for="units">Units to Add/Remove:</label>
-                            <input type="number" id="units" name="units" placeholder="Use negative for removal" required>
+
+                        <div class="form-group">
+                            <label for="units">Units</label>
+                            <input type="number" name="units" id="units" min="1" required>
                         </div>
+
+                        <div class="form-group">
+                            <label for="action">Action</label>
+                            <select name="action" id="action" required>
+                                <option value="add">Add Units</option>
+                                <option value="subtract">Remove Units</option>
+                                <option value="set">Set Exact Value</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description (Optional)</label>
+                            <textarea name="description" id="description" rows="2"></textarea>
+                        </div>
+
                         <button type="submit" class="btn">Update Stock</button>
-                    </div>
-                </form>
-                
-                <h3>Recent Inventory Changes</h3>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Blood Group</th>
-                            <th>Change</th>
-                            <th>Type</th>
-                            <th>Current Stock</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>2025-01-15</td>
-                            <td>O+</td>
-                            <td>+5</td>
-                            <td>Donation</td>
-                            <td>30</td>
-                        </tr>
-                        <tr>
-                            <td>2025-01-15</td>
-                            <td>A+</td>
-                            <td>-2</td>
-                            <td>Request Fulfilled</td>
-                            <td>25</td>
-                        </tr>
-                        <tr>
-                            <td>2025-01-14</td>
-                            <td>B-</td>
-                            <td>+3</td>
-                            <td>Donation</td>
-                            <td>8</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <h3>Low Stock Alerts</h3>
-                <div class="alert error" style="margin-top: 1rem;">
-                    <p><strong>Warning:</strong> The following blood groups are running low:</p>
-                    <ul>
-                        <li>AB- (5 units remaining)</li>
-                        <li>B- (8 units remaining)</li>
-                        <li>O- (10 units remaining)</li>
-                    </ul>
+                    </form>
+                </div>
+
+                <!-- Recent Changes Log -->
+                <div class="inventory-log">
+                    <h3>Recent Inventory Changes</h3>
+                    <% if (typeof recentLogs !== 'undefined' && recentLogs.length > 0) { %>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Blood Group</th>
+                                    <th>Units</th>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Updated By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% recentLogs.forEach(log => { %>
+                                    <tr>
+                                        <td><%= new Date(log.createdAt).toLocaleString() %></td>
+                                        <td><%= log.bloodGroup %></td>
+                                        <td><%= log.units >= 0 ? '+' + log.units : log.units %></td>
+                                        <td><span class="badge <%= log.type %>"><%= log.type %></span></td>
+                                        <td><%= log.description || '-' %></td>
+                                        <td><%= log.relatedUser ? log.relatedUser.name : 'System' %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    <% } else { %>
+                        <p>No recent changes</p>
+                    <% } %>
                 </div>
             </div>
         </div>

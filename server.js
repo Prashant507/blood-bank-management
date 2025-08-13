@@ -2,6 +2,19 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    process.exit(1);
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (error) => {
+    console.error('Unhandled Rejection:', error);
+    process.exit(1);
+});
+
 require('./config/db');
 
 const authRoutes = require('./routes/auth');
@@ -26,6 +39,7 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
+// Routes
 app.use('/auth', authRoutes);
 app.use('/donor', donorRoutes);
 app.use('/recipient', recipientRoutes);

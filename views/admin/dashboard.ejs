@@ -18,15 +18,29 @@
                     <div class="alert error"><%= error %></div>
                 <% } %>
                 
+                <% if (typeof success !== 'undefined' && success) { %>
+                    <div class="alert success"><%= success %></div>
+                <% } %>
+                
                 <% if (typeof stats !== 'undefined') { %>
                     <div class="stats">
                         <div class="stat-card">
                             <h3><%= stats.donors %></h3>
                             <p>Total Donors</p>
+                            <div class="blood-group-breakdown">
+                                <% for (const [bloodGroup, count] of Object.entries(stats.donorsByBloodGroup)) { %>
+                                    <small><%= bloodGroup %>: <%= count %></small>
+                                <% } %>
+                            </div>
                         </div>
                         <div class="stat-card">
                             <h3><%= stats.recipients %></h3>
                             <p>Total Recipients</p>
+                            <div class="blood-group-breakdown">
+                                <% for (const [bloodGroup, count] of Object.entries(stats.recipientsByBloodGroup)) { %>
+                                    <small><%= bloodGroup %>: <%= count %></small>
+                                <% } %>
+                            </div>
                         </div>
                         <div class="stat-card">
                             <h3><%= stats.pendingDonations %></h3>

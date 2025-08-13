@@ -8,7 +8,10 @@ const auth = async (req, res, next) => {
             return res.redirect('/auth/login');
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+        if (!process.env.JWT_SECRET) {
+            throw new Error('JWT_SECRET is not defined in environment variables');
+        }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.id);
         
         if (!user) {
